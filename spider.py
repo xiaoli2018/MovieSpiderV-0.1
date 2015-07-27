@@ -10,6 +10,10 @@ import re
 import urllib
 import urllib2
 import time
+import sys
+
+
+
 
 class MovieSpider(object):
 
@@ -32,10 +36,11 @@ class MovieSpider(object):
         html = self.PageResponse(self.URL)
         movieField = re.findall("<a href='(.*?)'>",html)  #将网页中表示电影链接的区域划分出来
         # movieLink = re.findall("<a href='(.*?)'>",movieField,re.S)
-        i = 1
+        i = 0
         for l in movieField:
             link = self.URL + l
             i += 1
+            print '第%s部爬取完成'%i
             if i < 170:
                 yield link
             else:
@@ -55,12 +60,24 @@ class MovieSpider(object):
             with open(text,'ab') as handles:
                 handles.write('电影名：%s\n迅雷下载链接：%s\n网页原链接：%s\n\n'%(movieName[0].encode('utf-8'),movieDownload[0].encode('utf-8'),l.encode('utf-8')))
 
+            print '%s信息获取完成！'%movieName[0].encode('utf-8')
     def mian(self):
         self.SecondPage(self.FirstPage())
 
 if __name__ == '__main__':
-    spider = MovieSpider('http://www.dytt8.net/')
-    spider.mian()
+    print ('''
+    电影网络爬虫：爬取电影天堂上最新的电影
+    .....
+    ''')
+
+    try:
+        spider = MovieSpider('http://www.dytt8.net/')
+        spider.mian()
+    except:
+        print "Unexpected error:", sys.exc_info() # sys.exc_info()返回出错信息
+        raw_input('press enter key to exit') #这儿放一个等待输入是为了不让程序退出
+
+
 
 
 
